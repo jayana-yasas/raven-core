@@ -2,17 +2,20 @@ package com.example.demo.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
+@Builder
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SignUpDto {
-    String email;
-    Integer emailOtp;
-    String password;
+public class ContactTagsDto {
+
     String name;
-    String phoneNumber;
-    Integer phoneNumberOtp;
-//    String nic;
+    List<Long> contactIds;
+    Long userId;
+
 }
+

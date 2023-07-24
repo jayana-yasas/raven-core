@@ -32,8 +32,20 @@ public class Campaign extends BaseEntity {
     @Column(name = "scheduled_datetime")
     public LocalDateTime scheduledDatetime;
 
-    @Column(name = "template")
+    @Column(name = "template", length = 500)
     public String template;
+
+    @Column(name = "page_count")
+    public Integer pageCount;
+
+    @Column(name = "character_count")
+    public Integer characterCount;
+
+    @Column(name = "has_unicode")
+    public Boolean hasUnicode;
+
+    @Column(name = "user_id")
+    public Long userId;
 
     @PrePersist
     private void prePersist() {

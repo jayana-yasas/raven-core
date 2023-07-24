@@ -13,5 +13,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
     List<Tag> findByNameIn(Collection<String> names);
 
+    List<Tag> findByIdIn(Collection<Long> ids);
+
     Optional<Tag> findFirstByName(String name);
 }

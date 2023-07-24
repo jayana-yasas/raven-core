@@ -1,4 +1,4 @@
-package com.example.demo.adviser;
+package com.example.demo.exception.adviser;
 
 
 import com.example.demo.exception.InvestmentTypeInvalidException;

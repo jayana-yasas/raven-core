@@ -26,6 +26,9 @@ public class Contact extends BaseEntity {
     @Column(name = "name")
     public String name;
 
+    @Column(name = "user_id")
+    public Long userId;
+
     @PrePersist
     private void prePersist() {
         if (getCreatedAt() == null) setCreatedAt(LocalDateTime.now());

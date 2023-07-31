@@ -48,6 +48,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         request.setAttribute("traceId", UUID.randomUUID().toString());
         if (request.getRequestURI().equalsIgnoreCase("/authenticate")) {
             chain.doFilter(request, response);
+        }else if (request.getRequestURI().equalsIgnoreCase("/oauth2/authorization/google")) {
+            chain.doFilter(request, response);
         }else if (checkIfAuthUri(request.getRequestURI())) {
             chain.doFilter(request, response);
         } else {

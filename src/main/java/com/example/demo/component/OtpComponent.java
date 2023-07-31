@@ -49,7 +49,7 @@ public class OtpComponent {
             HashMap<String, String> params = new HashMap<>();
             params.put("<otp>", "12342");
             params.put("<otp_for>", "Quath");
-            String message = generateBody(otpApplication.getNotificationTemplate().getTemplatesSms(), params);
+            String message = generateBody(otpApplication.getTemplate().getTemplateSms(), params);
             log.info("message : {}", message);
             log.info("{}", otpApplication);
         } catch (Exception ex) {

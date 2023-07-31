@@ -1,8 +1,6 @@
 package com.example.demo.component;
 
-import com.example.demo.component.steps.*;
 import com.example.demo.dto.request.CampaignDto;
-import com.example.demo.dto.request.ContactDto;
 import com.example.demo.dto.shorturl.BulkRequest;
 import com.example.demo.dto.shorturl.BulkResponse;
 import com.example.demo.dto.shorturl.ShortUrlDetails;
@@ -10,12 +8,8 @@ import com.example.demo.entity.*;
 import com.example.demo.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -75,25 +69,29 @@ public class CreateCampaignComponent {
 
     public void create(String traceId, Long userId, CampaignDto campaignDto) throws URISyntaxException {
 
+//        -----------Save Campaign entity : start
         Campaign campaign = mapTo(userId, campaignDto);
-
         campaign = campaignRepository.save(campaign);
+
+//        -----------Save Campaign entity : end
         campaignDto.setCampaignId(campaign.getId());
 
         List<CampaignUrls> campaignUrlsList = mapToList(campaignDto);
 
         campaignUrlsRepository.saveAll(campaignUrlsList);
 
+//        -----------Get all numbers to send : start
         List<ContactTag> contactTags = contactTagRepository.findByTagId_IdIn(Arrays.asList(campaignDto.getToTags()));
 
         List<String> toSendNumbers = numberByTags(contactTags);
+
         toSendNumbers.addAll(Arrays.asList(campaignDto.getToNumbers()));
+//        -----------Get all numbers to send : end
 
-        System.out.println(toSendNumbers);
+//        -----------Set template list against mobile : start
+        List<BulkRequest.Link> links = new ArrayList<>();
 
-        List<BulkRequest.Link> links =new ArrayList<>();
-
-        Map<String, String> mobileTemplateMap= new HashMap<>();
+        Map<String, String> mobileTemplateMap = new HashMap<>();
 
         for (String toSentNumber : toSendNumbers) {
 
@@ -123,7 +121,7 @@ public class CreateCampaignComponent {
 
         Map<String, String> keyShortUrlMap= new HashMap<>();
         Map<String, String> keyLinkIdlMap= new HashMap<>();
-        for (BulkResponse bulkResponse : bulkResponses) {  // x 8
+        for (BulkResponse bulkResponse : bulkResponses) {
             keyShortUrlMap.put( "#" +bulkResponse.getPath()+ "#", bulkResponse.getShortURL());
             keyLinkIdlMap.put( "#" +bulkResponse.getPath()+ "#", bulkResponse.getIdString());
         }

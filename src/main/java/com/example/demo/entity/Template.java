@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@Table(name = "notification_template")
-public class NotificationTemplate extends BaseEntity {
+@Table(name = "template")
+public class Template extends BaseEntity {
 
     @Column(name = "name")
     public String name;
@@ -19,15 +19,14 @@ public class NotificationTemplate extends BaseEntity {
     @Column(name = "template_type")
     public String templateType; //SMS//EMAIL//BOTH
 
-    @Column(name = "templates_sms")
-    public String templatesSms;
+    @Column(name = "template_sms")
+    public String templateSms;
 
-    @Column(name = "templates_email")
-    public String templatesEmail;
+    @Column(name = "template_email")
+    public String templateEmail;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    public OtpUser userId;
+    @Column(name = "user_id")
+    public Long userId;
 
     @PrePersist
     private void prePersist() {

@@ -12,7 +12,7 @@ import lombok.Data;
 public class SmsRequestDto {
 
     String referenceId;
-    String senderMask;
+    String senderName;
     String[] destinations;
     String destination;
     String smsContent;

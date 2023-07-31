@@ -4,9 +4,8 @@ package com.example.demo.entity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -34,4 +33,16 @@ public class ShortUrlInfo extends BaseEntity {
 
     @Column(name = "link_id")
     public String idString;
+
+    @PrePersist
+    private void prePersist() {
+        if (getCreatedAt() == null) setCreatedAt(LocalDateTime.now());
+        setUpdatedAt(LocalDateTime.now());
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        setUpdatedAt(LocalDateTime.now());
+    }
+
 }

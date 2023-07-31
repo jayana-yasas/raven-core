@@ -2,7 +2,6 @@ package com.example.demo.component.steps;
 
 import com.example.demo.entity.OtpDetails;
 import com.example.demo.repository.OtpDetailRepository;
-import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

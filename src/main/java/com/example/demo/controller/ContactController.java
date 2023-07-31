@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.component.AddContactComponent;
 import com.example.demo.component.CommonComponent;
+import com.example.demo.component.DeleteContactComponent;
 import com.example.demo.component.FetchContactListComponent;
 import com.example.demo.dto.request.ContactDto;
 import com.example.demo.dto.request.ContactTagsDto;
@@ -18,12 +19,14 @@ import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/api/v1/contact")
 public class ContactController {
     private static final String RESPONSE_SUCCESS = "Successful Execution";
     private final CommonComponent component;
+    private final DeleteContactComponent deleteContactComponent;
     private final AddContactComponent addContactComponent;
     private final FetchContactListComponent fetchContactListComponent;
 
@@ -34,9 +37,17 @@ public class ContactController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping("/import")
+    public ResponseEntity<Response> addContactList(@RequestAttribute String traceId, @RequestAttribute Long userId, @RequestBody List<ContactDto> contactDtos) {
+        addContactComponent.saveOrUpdate(traceId, userId, contactDtos);
+        Response response = ResponseBuilder.composeSuccessResponse(RESPONSE_SUCCESS, null);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
     @GetMapping("/filter-list")
-    public ResponseEntity<Response> contactList(@RequestAttribute String traceId, @RequestAttribute Long userId, @RequestParam(defaultValue = "") String searchParam, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
-        Map<String, Object> contactList = fetchContactListComponent.getAllContactList(traceId, page, size, searchParam);
+    public ResponseEntity<Response> contactList(@RequestAttribute String traceId, @RequestAttribute Long userId, @RequestParam(defaultValue = "") String searchParam, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        Map<String, Object> contactList = fetchContactListComponent.getAllContactList(traceId, page, size, searchParam, userId);
         Response response = ResponseBuilder.composeSuccessResponse(RESPONSE_SUCCESS,contactList);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -44,12 +55,12 @@ public class ContactController {
     @GetMapping("/filter-list/download")
     public ResponseEntity<InputStreamResource> contactListDownload(@RequestAttribute String traceId, @RequestAttribute Long userId, @RequestParam(defaultValue = "") String searchParam, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size) {
         System.out.println(userId + " " + traceId + " " + searchParam);
-        Map<String, Object> contactList = fetchContactListComponent.getAllContactList(traceId, page, size, searchParam);
+        Map<String, Object> contactList = fetchContactListComponent.getAllContactList(traceId, page, size, searchParam, userId);
 
         ByteArrayInputStream in = null;
         String fileName = null;
         try {
-            in = component.toExcel(searchParam);
+            in = component.toExcel(searchParam, userId);
             fileName = "contacts.xlsx";
         }catch (Exception e){
             e.printStackTrace();
@@ -73,7 +84,7 @@ public class ContactController {
 
     @DeleteMapping()
     public ResponseEntity<Response> remove(@RequestAttribute String traceId, @RequestAttribute Long userId, @RequestParam List<Long> contactIds) {
-        component.deleteContact(traceId, contactIds);
+        deleteContactComponent.deleteContact(traceId, contactIds);
         Response response = ResponseBuilder.composeSuccessResponse(RESPONSE_SUCCESS,null);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

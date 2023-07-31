@@ -1,16 +1,11 @@
 package com.example.demo.component;
 
-import com.example.demo.component.steps.CheckUserExists;
 import com.example.demo.component.steps.GetContactListCount;
-import com.example.demo.component.steps.SaveOtpDetails;
-import com.example.demo.dto.request.SignUpDto;
 import com.example.demo.dto.response.ContactResponseDto;
 import com.example.demo.dto.response.TagDto;
 import com.example.demo.entity.Contact;
 import com.example.demo.entity.ContactTag;
-import com.example.demo.entity.OtpDetails;
 import com.example.demo.entity.Tag;
-import com.example.demo.exception.UserException;
 import com.example.demo.repository.ContactRepository;
 import com.example.demo.repository.ContactTagRepository;
 import com.example.demo.repository.TagRepository;
@@ -22,7 +17,6 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -34,14 +28,14 @@ public class FetchContactListComponent {
 
     private final GetContactListCount getContactListCount;
 
-    public Map<String, Object> getAllContactList(String traceId, int page, int size, String searchParam) {
+    public Map<String, Object> getAllContactList(String traceId, int page, int size, String searchParam, Long userId) {
 
         int offset = (page * size);
 
-        List<Contact> contactList = contactRepository.fetchPaginatedList__(searchParam, size, offset);
-        BigInteger count = getContactListCount.bySearchParam(traceId, searchParam);
+        List<Contact> contactList = contactRepository.fetchPaginatedList(searchParam, size, offset, userId);
+        BigInteger count = getContactListCount.bySearchParam(traceId, searchParam, userId);
 
-        List<ContactResponseDto> loanListDetails = contactList.stream().map(c -> {
+        List<ContactResponseDto> contactResponseDtoList = contactList.stream().map(c -> {
             List<ContactTag> contactTags = contactTagRepository.findDistinctByContactId_IdAndUser_Id(c.getId(), c.getUserId()) ;
             List<Tag> tags = tagRepository.findByIdIn(contactTags.stream().map(a-> a.getTagId().getId()).toList());
 
@@ -67,7 +61,7 @@ public class FetchContactListComponent {
         }).toList();
 
         Map<String, Object> response = new HashMap<>();
-        response.put("contactList", loanListDetails);
+        response.put("contactList", contactResponseDtoList);
         response.put("currentPage", page);
         response.put("totalItems", count);
         response.put("totalPages", (Long.parseLong(count.toString()) / size) + 1);

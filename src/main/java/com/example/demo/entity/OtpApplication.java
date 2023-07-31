@@ -27,7 +27,7 @@ public class OtpApplication extends BaseEntity {
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "notification_template_id", referencedColumnName = "id")
-    public NotificationTemplate notificationTemplate;
+    public Template template;
 
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id", referencedColumnName = "id")

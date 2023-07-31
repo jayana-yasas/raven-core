@@ -1,7 +1,7 @@
 package com.example.demo.exception.adviser;
 
 
-import com.example.demo.exception.InvestmentTypeInvalidException;
+import com.example.demo.exception.SenderException;
 import com.example.demo.exception.UserException;
 import com.example.demo.util.Response;
 import com.example.demo.util.ResponseBuilder;
@@ -18,18 +18,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({InvestmentTypeInvalidException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<Response> handleLoanSuccessFeesConfigNotFoundException(InvestmentTypeInvalidException exception) {
-        log.error("[FSF]" + exception.getMessage());
-        Response response = ResponseBuilder.composeFailureResponse("", exception.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
 
     @ExceptionHandler({UserException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Response> handleUserException(UserException exception) {
-        log.error("[FSF]" + exception.getMessage());
+        log.error("[USER]" + exception.getMessage());
+        Response response = ResponseBuilder.composeFailureResponse(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler({SenderException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Response> handleSenderException(SenderException exception) {
+        log.error("[SENDER]" + exception.getMessage());
         Response response = ResponseBuilder.composeFailureResponse(exception.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }

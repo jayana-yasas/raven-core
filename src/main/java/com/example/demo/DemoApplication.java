@@ -11,6 +11,7 @@ public class DemoApplication {
     }
 
 }
+
 /*
 
 INSERT INTO `users` (`id`, `created_at`, `updated_at`, `email`, `first_name`, `password`) VALUES ('1', NULL, NULL, 'root', 'Akila', 'password');

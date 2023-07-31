@@ -14,8 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@CrossOrigin
 @AllArgsConstructor
 public class UserController {
 
@@ -60,7 +62,6 @@ public class UserController {
 
     @PostMapping("/user/auth/sign-up")
     public ResponseEntity<Response> signup(@RequestBody SignUpDto signUpDto, @RequestAttribute String traceId) {
-
         signUpUserComponent.signUp(traceId, signUpDto);
         Response response = ResponseBuilder.composeSuccessResponse("User Registration is Successful", null);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -80,6 +81,11 @@ public class UserController {
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
         }
 
+    }
+
+    @PostMapping(value = "/oauth2/authorization/google")
+    public Principal user(Principal principal) {
+        return principal;
     }
 
 }

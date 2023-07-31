@@ -3,7 +3,6 @@ package com.example.demo.dto.response;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.persistence.Column;
 import java.util.List;
 
 @Data

@@ -2,7 +2,6 @@ package com.example.demo.component.steps;
 
 import com.example.demo.entity.Contact;
 import com.example.demo.repository.ContactRepository;
-import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,8 +12,11 @@ import org.springframework.stereotype.Component;
 public class CheckContactExists {
     private final ContactRepository contactRepository;
 
-    public Boolean check(String traceId, Long userId, String email, String phoneNumber) {
-        return  contactRepository.existsByUserIdAndEmailOrPhoneNumber(userId, email, phoneNumber);
+    public Boolean checkByEmail(String traceId, Long userId, String email) {
+        return  contactRepository.existsByUserIdAndEmail(userId, email);
+    }
+    public Boolean checkByPhone(String traceId, Long userId, String phoneNumber) {
+        return  contactRepository.existsByUserIdAndPhoneNumber(userId, phoneNumber);
     }
     public Contact get(String traceId, Long userId, String email, String phoneNumber) {
         return  contactRepository.findByUserIdAndEmailOrPhoneNumber(userId, email, phoneNumber)

@@ -15,7 +15,7 @@ public class VerifyPhoneOtpComponent {
     private final CheckOtpExists checkOtpExists;
 
     public boolean verify(String traceId, SignUpDto signUpDto) {
-        boolean otpExists = checkOtpExists.byPhone(traceId, signUpDto.getPhoneNumber(), signUpDto.getEmailOtp());
+        boolean otpExists = checkOtpExists.byPhone(traceId, signUpDto.getPhoneNumber(), signUpDto.getPhoneNumberOtp());
         if(!otpExists){
             throw new UserException("Otp is not matched");
         }

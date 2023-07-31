@@ -2,12 +2,8 @@ package com.example.demo.component;
 
 import com.example.demo.component.steps.*;
 import com.example.demo.dto.request.ContactDto;
-import com.example.demo.dto.request.SignUpDto;
 import com.example.demo.entity.Contact;
-import com.example.demo.entity.Tag;
 import com.example.demo.entity.User;
-import com.example.demo.exception.UserException;
-import com.example.demo.repository.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -20,11 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class AddContactComponent {
 
-    private final TagRepository tagRepository;
-    private final ContactTagRepository contactTagRepository;
-    private final UserRepository userRepository;
     private final CheckContactExists checkContactExists;
-    private final ContactTagComponent contactTagComponent;
     private final SaveContact saveContact;
     private final DeleteContactTags deleteContactTags;
     private final GetUser getUser;
@@ -41,13 +33,19 @@ public class AddContactComponent {
     }
 
 
+    public void saveOrUpdate(String traceId, Long userId, List<ContactDto> contactDtos) {
+
+        contactDtos.forEach(contactDto -> saveOrUpdate(traceId, userId, contactDto));
+    }
+
     public void saveOrUpdate(String traceId, Long userId, ContactDto contactDto) {
 
         contactDto.setUserId(userId);
-        boolean contactExistsForUser = checkContactExists.check(traceId, userId, contactDto.getEmail(), contactDto.getPhoneNumber());
+        boolean contactExistsForUserByEmail = checkContactExists.checkByEmail(traceId, userId, contactDto.getEmail());
+        boolean contactExistsForUserByPhone = checkContactExists.checkByEmail(traceId, userId, contactDto.getPhoneNumber());
 
         Contact contact;
-        if (contactExistsForUser) {
+        if (contactExistsForUserByEmail || contactExistsForUserByPhone) {
             contact = checkContactExists.get(traceId, userId, contactDto.getEmail(), contactDto.getPhoneNumber());
             contact.setName(contactDto.getName());
         } else {

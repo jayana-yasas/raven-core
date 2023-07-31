@@ -1,17 +1,14 @@
 package com.example.demo.component.steps;
 
 import com.example.demo.component.ContactTagComponent;
-import com.example.demo.dto.request.ContactDto;
 import com.example.demo.entity.Contact;
 import com.example.demo.entity.Tag;
 import com.example.demo.entity.User;
-import com.example.demo.repository.ContactTagRepository;
 import com.example.demo.repository.TagRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j

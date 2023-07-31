@@ -1,10 +1,9 @@
 package com.example.demo.component;
 
-import com.example.demo.component.steps.CheckOtpExists;
 import com.example.demo.component.steps.CheckUserExists;
 import com.example.demo.component.steps.SaveOtpDetails;
-import com.example.demo.dto.request.*;
-import com.example.demo.entity.*;
+import com.example.demo.dto.request.SignUpDto;
+import com.example.demo.entity.OtpDetails;
 import com.example.demo.exception.UserException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,7 @@ public class SendEmailOtpComponent {
 
     public Boolean send(String traceId, SignUpDto signUpDto) {
         boolean existsByEmail = checkUserExists.byEmail(traceId, signUpDto.getEmail());
-        if(!existsByEmail){
+        if(existsByEmail){
             throw new UserException("Email is already registered with a user");
         }
         OtpDetails otpDetails = mapTo(signUpDto);

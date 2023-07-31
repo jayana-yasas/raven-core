@@ -1,12 +1,17 @@
 package com.example.demo.component;
 
 import com.example.demo.dto.request.ContactTagsDto;
-import com.example.demo.dto.request.TemplateDto;
 import com.example.demo.dto.response.TagDto;
 import com.example.demo.dto.shorturl.BulkRequest;
 import com.example.demo.dto.shorturl.BulkResponse;
-import com.example.demo.entity.*;
-import com.example.demo.repository.*;
+import com.example.demo.entity.Contact;
+import com.example.demo.entity.ContactTag;
+import com.example.demo.entity.Tag;
+import com.example.demo.entity.User;
+import com.example.demo.repository.ContactRepository;
+import com.example.demo.repository.ContactTagRepository;
+import com.example.demo.repository.TagRepository;
+import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -27,9 +32,6 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
-
-
-
 @Slf4j
 @Component
 @AllArgsConstructor
@@ -39,9 +41,6 @@ public class CommonComponent {
     private final TagRepository tagRepository;
     private final ContactTagRepository contactTagRepository;
     private final UserRepository userRepository;
-    private final CampaignRepository campaignRepository;
-    private final CampaignUrlsRepository campaignUrlsRepository;
-    private final TemplateRepository templateRepository;
     private final ContactTagComponent contactTagComponent;
 
     public boolean is(String email) {
@@ -62,12 +61,6 @@ public class CommonComponent {
         } else {
             return null;
         }
-    }
-
-    @Transactional
-    public void deleteContact(String traceId, List<Long> contactIdList) {
-        contactTagRepository.deleteByContactIdIn(contactRepository.findAllById(contactIdList));
-        contactRepository.deleteByIdIn(contactIdList);
     }
 
     @Transactional
@@ -149,22 +142,6 @@ public class CommonComponent {
     }
 
 
-    public void addTemplate(String traceId, Long userId, TemplateDto templateDto) {
-        NotificationTemplate notificationTemplate;
-        Optional<NotificationTemplate> templateOptional = templateRepository.findByNameAndTemplateType(templateDto.getName(), templateDto.getType());
-        notificationTemplate = templateOptional.orElseGet(NotificationTemplate::new);
-
-        notificationTemplate.setTemplateType(templateDto.getType());
-        if (templateDto.getType().equalsIgnoreCase("SMS")) {
-            notificationTemplate.setTemplatesSms(templateDto.getTemplate());
-        } else if (templateDto.getType().equalsIgnoreCase("EMAIL")) {
-            notificationTemplate.setTemplatesEmail(templateDto.getTemplate());
-        }
-        notificationTemplate.setName(templateDto.getName());
-//        notificationTemplate.setUserId(userId);
-        templateRepository.save(notificationTemplate);
-    }
-
     public Map<String, Object> getContactTags(String traceId, Long userId) {
 
         List<ContactTag> contactTags = contactTagRepository.findByUser_Id(userId);
@@ -182,9 +159,9 @@ public class CommonComponent {
         return response;
     }
 
-    public ByteArrayInputStream toExcel(String searchParam) throws IOException {
+    public ByteArrayInputStream toExcel(String searchParam, Long userId) throws IOException {
         String[] columns = {"name", "email", "phone"};
-        List<Contact> contactResponseDto = contactRepository.fetchList(searchParam);
+        List<Contact> contactResponseDto = contactRepository.fetchList(searchParam, userId);
         try (
                 Workbook workbook = new XSSFWorkbook();
                 ByteArrayOutputStream out = new ByteArrayOutputStream();

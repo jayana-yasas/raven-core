@@ -1,6 +1,5 @@
 package com.example.demo.component.steps;
 
-import com.example.demo.dto.request.SignUpDto;
 import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
